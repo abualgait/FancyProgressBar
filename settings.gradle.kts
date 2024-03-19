@@ -15,4 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "FancyProgressBar"
 include(":app")
- 
+include(":FancyProgressBar")
