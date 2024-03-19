@@ -18,6 +18,26 @@ The progress animation in FancyProgressBar is implemented using Jetpack Compose'
 **PointerInput** 👆
 FancyProgressBar supports PointerInput, allowing users to interact with the progress bar directly. This enables intuitive control, such as dragging the progress indicator to a specific point.
 
+
+## Installing:
+Add it in your root build.gradle at the end of repositories:
+
+```
+dependencyResolutionManagement {
+		repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+		repositories {
+			mavenCentral()
+			maven { url = uri("https://jitpack.io") }
+		}
+	}
+ ```
+Add the dependency
+
+```
+dependencies {
+	        implementation ("com.github.abualgait:FancyProgressBar:1.0.1")
+	}
+```
 ## Inspiration:
 - X: https://twitter.com/dennyshess/status/1761232107802669164
 
