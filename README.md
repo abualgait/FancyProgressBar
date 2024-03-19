@@ -1,4 +1,4 @@
- 
+
 ![FancyProgressBar](https://github.com/abualgait/FancyProgressBar/assets/38107393/bdf39f16-96eb-4d7c-9335-04f830dcf29f)
 
 ![WhatsAppVideo2024-02-25at5 25 13AM-ezgif com-video-to-gif-converter](https://github.com/abualgait/FancyProgressBar/assets/38107393/26d0b476-c3af-402e-b269-88c5b596eef0)
@@ -6,6 +6,7 @@
 # FancyProgressBar 💫
 FancyProgressBar is a custom progress bar component developed using Jetpack Compose. It offers a visually appealing way to display progress with various customization options.
 
+[![](https://jitpack.io/v/abualgait/FancyProgressBar.svg)](https://jitpack.io/#abualgait/FancyProgressBar) 
 ## Showcase 🎨
 
 **Compose ConstraintLayout** 🖼️
