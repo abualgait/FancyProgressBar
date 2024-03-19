@@ -1,6 +1,7 @@
 package com.muhammadsayed.fancyprogressbar
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.core.animateDpAsState
@@ -17,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -25,7 +27,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.layoutId
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
@@ -47,11 +50,20 @@ class MainActivity : ComponentActivity() {
                         .background(Color(0xFF121113)),
                     contentAlignment = Alignment.Center
                 ) {
-                    val progressBarWidth = 250
-                    with(LocalDensity.current) {
-                        FancyProgressBar(progressBarWidth.dp.toPx())
-                    }
+                    FancyProgressBar(
+                        Modifier
+                            .height(90.dp)
+                            .width(250.dp),
+                        onDragEnd = { finalProgress ->
+                            Log.e(
+                                "finalProgress: ",
+                                "${String.format("%.0f", (1 - finalProgress) * 100)}%"
+                            )
 
+
+                        }, onDrag = { progress ->
+                            Log.d("progress: ", "${String.format("%.0f", (1 - progress) * 100)}%")
+                        })
                 }
             }
         }
@@ -59,12 +71,23 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun FancyProgressBar(progressBarWidthInPx: Float) {
+fun FancyProgressBar(
+    modifier: Modifier,
+    leftColor: Color = Color(0xFF212022),
+    rightColor: Color = Color(0xFF4F42EF),
+    indicatorColor: Color = Color.White,
+    textStyle: TextStyle = TextStyle(color = Color.White),
+    cornerRaduis: Dp = 10.dp,
+    onDragEnd: (Float) -> Unit,
+    onDrag: (Float) -> Unit,
+) {
 
     var offsetX by remember { mutableFloatStateOf(0f) }
+    var progressBarWidthInDp by remember { mutableStateOf(Dp(0f)) }
+
     val guidelinePercentage by remember {
         derivedStateOf {
-            offsetX / progressBarWidthInPx
+            Dp(offsetX) / progressBarWidthInDp
         }
     }
 
@@ -79,14 +102,14 @@ fun FancyProgressBar(progressBarWidthInPx: Float) {
         targetValue = if (isAnimatePercentageUp) -Dp(35f) else Dp(0f),
         label = "Text Animation"
     )
-
     Box(
-        modifier = Modifier
-            .width(250.dp)
-            .height(90.dp)
+        modifier = modifier
             .clip(
                 RoundedCornerShape(10.dp)
             )
+            .onSizeChanged {
+                progressBarWidthInDp = it.width.dp
+            }
     ) {
 
         val constraints = ConstraintSet {
@@ -154,8 +177,8 @@ fun FancyProgressBar(progressBarWidthInPx: Float) {
                 modifier = Modifier
                     .layoutId("leftBox")
                     .background(
-                        shape = RoundedCornerShape(10.dp),
-                        color = Color(0xFF212022)
+                        shape = RoundedCornerShape(cornerRaduis),
+                        color = leftColor
                     )
             )
 
@@ -164,8 +187,8 @@ fun FancyProgressBar(progressBarWidthInPx: Float) {
                 modifier = Modifier
                     .layoutId("rightBox")
                     .background(
-                        shape = RoundedCornerShape(10.dp),
-                        color = Color(0xFF4F42EF)
+                        shape = RoundedCornerShape(cornerRaduis),
+                        color = rightColor
                     )
             )
 
@@ -173,13 +196,15 @@ fun FancyProgressBar(progressBarWidthInPx: Float) {
                 .layoutId("indicator")
                 .offset { IntOffset(offsetX.roundToInt(), 0) }
                 .width(5.dp)
-                .background(shape = RoundedCornerShape(5.dp), color = Color.White)
+                .background(shape = RoundedCornerShape(5.dp), color = indicatorColor)
                 .pointerInput(Unit) {
-                    detectDragGestures { change, dragAmount ->
+                    detectDragGestures(onDragEnd = { onDragEnd(guidelinePercentage) }) { change, dragAmount ->
                         change.consume()
                         offsetX = (offsetX + dragAmount.x)
-                            .coerceIn(0f, 250.dp.toPx())
+                            .coerceIn(0f, progressBarWidthInDp.value)
+                        onDrag(guidelinePercentage)
                     }
+
                 }
             )
 
@@ -188,7 +213,7 @@ fun FancyProgressBar(progressBarWidthInPx: Float) {
                 modifier = Modifier
                     .layoutId("leftPercentage")
                     .offset(y = animation.value),
-                color = Color.White.copy(alpha = 0.7f)
+                style = textStyle
             )
 
             Text(
@@ -196,7 +221,7 @@ fun FancyProgressBar(progressBarWidthInPx: Float) {
                 modifier = Modifier
                     .layoutId("rightPercentage")
                     .offset(y = animation.value),
-                color = Color.White.copy(alpha = 0.7f)
+                style = textStyle
             )
 
         }
@@ -208,7 +233,16 @@ fun FancyProgressBar(progressBarWidthInPx: Float) {
 @Preview
 @Composable
 fun FancyProgressPreview() {
-    with(LocalDensity.current) {
-        FancyProgressBar(250.dp.toPx())
-    }
+    FancyProgressBar(
+        Modifier
+            .height(90.dp)
+            .width(250.dp),
+        onDragEnd = { finalProgress ->
+            print("${String.format("%.0f", (1 - finalProgress) * 100)}%")
+
+
+        }, onDrag = { progress ->
+            print("${String.format("%.0f", (1 - progress) * 100)}%")
+        })
+
 }
