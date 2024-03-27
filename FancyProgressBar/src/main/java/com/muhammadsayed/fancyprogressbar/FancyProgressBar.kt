@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -34,6 +35,7 @@ import kotlin.math.roundToInt
 @Composable
 fun FancyProgressBar(
     modifier: Modifier,
+    progress: Float = 0f.coerceIn(0f, 1f),
     leftColor: Color = Color(0xFF212022),
     rightColor: Color = Color(0xFF4F42EF),
     indicatorColor: Color = Color.White,
@@ -52,7 +54,9 @@ fun FancyProgressBar(
         }
     }
 
-
+    LaunchedEffect(progress) {
+        offsetX = progress.coerceIn(0f, 1f).times(progressBarWidthInDp.value)
+    }
     val isAnimatePercentageUp by remember {
         derivedStateOf {
             guidelinePercentage < 0.2f || guidelinePercentage > 0.8f

@@ -53,13 +53,12 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun FancyProgressPreview() {
     FancyProgressBar(
-        Modifier
+        progress = 0.50f,
+        modifier = Modifier
             .height(90.dp)
             .width(250.dp),
         onDragEnd = { finalProgress ->
             print("${String.format("%.0f", (1 - finalProgress) * 100)}%")
-
-
         }, onDrag = { progress ->
             print("${String.format("%.0f", (1 - progress) * 100)}%")
         })
