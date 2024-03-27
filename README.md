@@ -35,7 +35,7 @@ Add the dependency
 
 ```
 dependencies {
-	        implementation ("com.github.abualgait:FancyProgressBar:1.0.1")
+	        implementation ("com.github.abualgait:FancyProgressBar:x.y.z")
 	}
 ```
 ## Inspiration:
